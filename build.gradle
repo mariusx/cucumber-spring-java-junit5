@@ -34,6 +34,9 @@ dependencies {
     testImplementation("io.github.bonigarcia:webdrivermanager:latest.release") {
         because("we want someone else to manage webdrivers")
     }
+    testImplementation("me.jvt.cucumber:reporting-plugin:7.2.0") {
+        because("we would like to test this plugin to see if the output is identical to using com.github.spacialcircumstances.gradle-cucumber-reporting")
+    }
 }
 
 group = 'biz.marius'
@@ -82,7 +85,7 @@ tasks.test {
     // OPTIONAL: Set the fixed number of parallel test executions. Only works for the "fixed" strategy defined above
     systemProperty("cucumber.execution.parallel.config.fixed.parallelism", 4)
     // OPTIONAL: Enable Cucumber plugins, enable/disable as desired
-    systemProperty("cucumber.plugin", "json:build/reports/cucumber.json, message:build/reports/cucumber.ndjson, timeline:build/reports/timeline, html:build/reports/cucumber.html")
+    systemProperty("cucumber.plugin", "me.jvt.cucumber.report.PrettyReports:build/reports/cucumber, json:build/reports/cucumber.json, message:build/reports/cucumber.ndjson, timeline:build/reports/timeline, html:build/reports/cucumber.html")
     // OPTIONAL: Improve readability of test names in reports
     systemProperty("cucumber.junit-platform.naming-strategy", "long")
     // OPTIONAL: Don't show Cucumber ads
@@ -102,12 +105,13 @@ task cucumberCli() {
                     '--plugin', 'pretty',
                     '--plugin', 'html:build/cucumber-report.html',
                     '--plugin', 'message:build/results.ndjson',
+                    '--plugin', 'me.jvt.cucumber.report.PrettyReports:build/cucumber',
                     '--glue', 'io.cucumber.examples.spring.application',
                     'src/test/resources']
         }
     }
 }
-
+// config for com.github.spacialcircumstances.gradle-cucumber-reporting
 cucumberReports {
     outputDir = file('build/generated/html')
     buildId = '0'
